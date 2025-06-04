@@ -1,17 +1,18 @@
+import { useAuth } from '@/context/AuthContext';
+import { COLORS } from '@/utils/colors';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-// import { useAuth } from '@/context/AuthContext';
-import { COLORS } from '@/utils/colors';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'expo-router';
-import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -27,7 +28,7 @@ type FormData = z.infer<typeof schema>;
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
-  // const { onRegister } = useAuth();
+  const { onRegister } = useAuth();
   const router = useRouter();
 
   const {
@@ -48,15 +49,13 @@ const Register = () => {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     console.log({ data });
-    // const result = await onRegister!(data.email, data.password, data.name);
-    // if (result && result.error) {
-    //   Alert.alert('Error', result.msg);
-    // } else {
-    //   router.back();
-    // }
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    const result = await onRegister!(data.email, data.password, data.name);
+    if (result && result.error) {
+      Alert.alert('Error', result.msg);
+    } else {
+      router.back();
+    }
+    setLoading(false);
   };
 
   return (

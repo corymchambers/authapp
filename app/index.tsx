@@ -1,18 +1,19 @@
+import { useAuth } from '@/context/AuthContext';
+import { COLORS } from '@/utils/colors';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-// import { useAuth } from '@/context/AuthContext';
-import { COLORS } from '@/utils/colors';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
-import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -24,7 +25,7 @@ type FormData = z.infer<typeof schema>;
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  // const { onLogin } = useAuth();
+  const { onLogin } = useAuth();
 
   const {
     control,
@@ -33,18 +34,19 @@ const Login = () => {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: 'simon@galaxies.dev',
-      password: 'Test123',
+      email: 'cory@test.com',
+      password: '123456',
     },
     mode: 'onChange',
   });
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-    // const result = await onLogin!(data.email, data.password);
-    // if (result && result.error) {
-    //   Alert.alert('Error', result.msg);
-    // }
+    const result = await onLogin!(data.email, data.password);
+    console.log({result})
+    if (result && result.error) {
+      Alert.alert('Error', result.msg);
+    }
     setLoading(false);
   };
 
